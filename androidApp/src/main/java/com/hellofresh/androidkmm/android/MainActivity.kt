@@ -3,7 +3,9 @@ package com.hellofresh.androidkmm.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
@@ -13,11 +15,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.hellofresh.androidkmm.Greeting
 import com.hellofresh.androidkmm.model.DataEntity
 import com.hellofresh.androidkmm.model.Entries
-import com.hellofresh.androidkmm.model.PhoneBrands
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -26,20 +25,29 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyApplicationTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    val uiState: MutableStateFlow<List<Entries>> = MutableStateFlow(emptyList())
-
-                    LaunchedEffect("phones") {
-                        val phones = DataEntity.data()
-                        uiState.value = phones
+                Scaffold(topBar = {
+                    TopAppBar {
+                        Text(text = "Sample Entries")
                     }
+                }) { contentPadding ->
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(contentPadding),
+                        color = MaterialTheme.colors.background
+                    ) {
+                        val uiState: MutableStateFlow<List<Entries>> = MutableStateFlow(emptyList())
 
-                    PhoneBrandScreen(phonesState = uiState)
+                        LaunchedEffect("phones") {
+                            val phones = DataEntity.data()
+                            uiState.value = phones
+                        }
 
+                        PhoneBrandScreen(phonesState = uiState)
+
+                    }
                 }
+
             }
         }
     }
